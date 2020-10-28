@@ -14,6 +14,13 @@ export default class TodoRepository {
 		})
 	}
 
+	async insert(todo: Todo): Promise<string> {
+		const result = await axios.post(`${SERVER_BASE_URL}${SERVER_API_PATH}/todos`, {
+			description: todo.description
+		});
+		return result.data;
+	}
+
 	async delete(id: string): Promise<void> {
 		await axios.delete(`${SERVER_BASE_URL}${SERVER_API_PATH}/todos/${id}`)
 	}

@@ -60,17 +60,25 @@ export default function TodoList() {
 	const onRowSelect = (params: RowSelectedParams) => setSelectedRow(params.data as Todo)
 
 	const onConfirm = (todo: Todo) => {
-		return (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => console.log(todo)
+		return async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+			if (todo.id) {
+			} else {
+				const newId = await todoRepository.insert(todo)
+				await fetchData()
+				setSelectedRow({ id: '', description: '' } as Todo)
+				console.log(`Inserted new todo with id: ${newId}`)
+			}
+		}
 	}
 
-	const onAdd = () => setSelectedRow({ id: '', description: '' } as Todo )
+	const onAdd = () => setSelectedRow({ id: '', description: '' } as Todo)
 
 	const onDelete = async () => {
-		const id = selectedRow.id;
-		await todoRepository.delete(id);
-		await fetchData();
-		setSelectedRow({ id: '', description: '' } as Todo);
-		console.log(`Deleted todo with id: ${id}`);
+		const id = selectedRow.id
+		await todoRepository.delete(id)
+		await fetchData()
+		setSelectedRow({ id: '', description: '' } as Todo)
+		console.log(`Deleted todo with id: ${id}`)
 	}
 
 	return (
