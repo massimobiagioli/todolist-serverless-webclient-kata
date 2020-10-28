@@ -12,7 +12,7 @@ import TodoRepository from '../../lib/todo/todo-repository'
 import TodoDetail from './TodoDetail'
 
 export default function TodoList() {
-	const client = new TodoRepository()
+	const todoRepository = new TodoRepository()
 	const [rows, setRows] = useState([] as RowsProp)
 	const [selectedRow, setSelectedRow] = useState({ id: '', description: '' } as Todo)
 
@@ -43,18 +43,19 @@ export default function TodoList() {
 	]
 
 	useEffect(() => {
-		const fetchData = async () => {
-			const todos: Todo[] = await client.find()
-			const result: RowsProp = todos.map((todo: Todo) => {
-				return {
-					id: todo.id,
-					description: todo.description,
-				}
-			})
-			setRows(result)
-		}
 		fetchData()
 	}, [])
+
+	const fetchData = async () => {
+		const todos: Todo[] = await todoRepository.find()
+		const result: RowsProp = todos.map((todo: Todo) => {
+			return {
+				id: todo.id,
+				description: todo.description,
+			}
+		})
+		setRows(result)
+	}
 
 	const onRowSelect = (params: RowSelectedParams) => setSelectedRow(params.data as Todo)
 
@@ -64,7 +65,13 @@ export default function TodoList() {
 
 	const onAdd = () => setSelectedRow({ id: '', description: '' } as Todo )
 
-	const onDelete = () => console.log(selectedRow)
+	const onDelete = async () => {
+		const id = selectedRow.id;
+		await todoRepository.delete(id);
+		await fetchData();
+		setSelectedRow({ id: '', description: '' } as Todo);
+		console.log(`Deleted todo with id: ${id}`);
+	}
 
 	return (
 		<div style={{ height: 600, width: '100%' }}>

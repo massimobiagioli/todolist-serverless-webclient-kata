@@ -3,6 +3,7 @@ import {SERVER_API_PATH, SERVER_BASE_URL} from "../../config/app-config";
 import axios from 'axios';
 
 export default class TodoRepository {
+
 	async find(): Promise<Todo[]> {
 		const result = await axios.get(`${SERVER_BASE_URL}${SERVER_API_PATH}/todos`);
 		return result.data.map((item: Todo) => {
@@ -11,5 +12,9 @@ export default class TodoRepository {
 				description: item.description
 			}
 		})
+	}
+
+	async delete(id: string): Promise<void> {
+		await axios.delete(`${SERVER_BASE_URL}${SERVER_API_PATH}/todos/${id}`)
 	}
 }
