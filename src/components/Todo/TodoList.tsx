@@ -62,6 +62,9 @@ export default function TodoList() {
 	const onConfirm = (todo: Todo) => {
 		return async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 			if (todo.id) {
+				await todoRepository.update(todo)
+				await fetchData()
+				console.log(`Updated todo with id: ${todo.id}`)
 			} else {
 				const newId = await todoRepository.insert(todo)
 				await fetchData()
